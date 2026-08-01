@@ -1,19 +1,18 @@
 import { useNavigate } from "react-router-dom";
 
-const navigate = useNavigate();
 
-const logout = () =>{
-    localStorage.removeItem("token");
-    navigate("/login")
-}
+
+
 
 function Dashboard() {
-    const logout = () => {
-        localStorage.removeItem(
-            "token"
-        );
-        window.location.href = "login";
-    };
+    
+    const navigate = useNavigate();
+
+    const logout = () =>{
+
+        localStorage.removeItem("token");
+        navigate("/login");
+    }
     return(
         <div>
             <h1>Dashboard</h1>
