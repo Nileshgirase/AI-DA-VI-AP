@@ -70,7 +70,7 @@ def login_user(
     
     if not verify_password(
         user.password,
-        db_user.hash_password
+        db_user.password
     ):
         raise HTTPException(
             status_code=401,

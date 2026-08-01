@@ -1,5 +1,13 @@
 import { useState } from "react";
+
 import api from "../services/api";
+
+import { Link } from "react-router-dom";
+
+import { useNavigate } from "react-router-dom";
+
+
+
 
 function Login(){
 
@@ -7,6 +15,8 @@ function Login(){
     useState("");
 
     const [password, setPassword] = useState("");
+    
+    const navigate = useNavigate();
 
     const handleLogin = async () => {
         try {
@@ -14,7 +24,7 @@ function Login(){
                 await api.post("/login",
                     {
                         email,
-                        password
+                        password,
                     }
                 );
             localStorage.setItem(
@@ -23,10 +33,23 @@ function Login(){
             );
 
             alert("Login Successful");
-        } catch{
-            alert("Login Failed");
+
+            navigate("/dashboard");
+        } 
+        catch (error)
+        {
+            console.log(error);
+            console.log(error.response);
+
+            if(error.response){
+                alert(error.response.data.detail);
+            }else{
+                alert(error.message);
+            }
         }
     };
+
+
     return(
         <div>
             <h1>Login</h1>
@@ -40,11 +63,22 @@ function Login(){
             <input type="password"
                 placeholder="Enter Password"
                 onChange={(e)=>
-                    e.target.value
+                    setPassword(e.target.value)
                 }
             />
+           
+            <div>
+                <Link to="/forgotpassword">Forgot Password?</Link>
+            </div>
 
-            <button onclick={handleLogin}>Login</button>
+            
+
+            <button type="button" onClick={handleLogin}>Login</button>
+            <div className="go-signup">
+                <Link to="/signup">New Register?</Link>
+            </div>
+
+            
         </div>
     );
 }
