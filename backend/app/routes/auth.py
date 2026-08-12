@@ -1,8 +1,10 @@
 
 from fastapi import APIRouter, Depends, HTTPException  # type: ignore[reportMissingImports]
+
 from sqlalchemy.orm import Session #type: ignore[reportMissingImports]
 
 from app.database import SessionLocal
+
 from app.models.user import User
 
 from app.schemas.user_schema import UserCreate, UserLogin
@@ -13,6 +15,7 @@ from app.services.auth_service import hash_password, verify_password
 
 from app.utils.jwt_handler import create_access_token
 
+from app.dependencies.auth import get_current_user
 
 router = APIRouter()
 
@@ -84,4 +87,12 @@ def login_user(
     return{
         "access_token":token,
         "token_type":"bearer"
+    }
+
+@router.get("/me")
+def get_me(
+    current_user: User = Depends(get_current_user)):
+    return {
+        "email": current_user["sub"],
+        "username": current_user["username"]
     }

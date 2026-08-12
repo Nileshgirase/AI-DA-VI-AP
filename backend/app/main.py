@@ -1,7 +1,9 @@
 from fastapi import FastAPI  # type: ignore[import]
+
 from fastapi.middleware.cors import CORSMiddleware # type: ignore[import]
 
 from app.database import engine, Base
+
 from app.routes.auth import router
 
 Base.metadata.create_all(bind=engine)

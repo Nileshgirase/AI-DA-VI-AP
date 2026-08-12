@@ -32,7 +32,7 @@ function Login(){
                 response.data.access_token 
             );
 
-            alert("Login Successful");
+            console.log("Token : ", response.data.access_token);
 
             navigate("/dashboard");
         } 

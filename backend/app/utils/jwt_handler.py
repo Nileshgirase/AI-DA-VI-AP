@@ -1,4 +1,4 @@
-from jose import jwt # type: ignore[reportMissingImports]
+from jose import jwt, JWTError # type: ignore[reportMissingImports]
 from datetime import datetime, timedelta
 
 SECRET_KEY = "mysecretkey"
@@ -22,3 +22,17 @@ def create_access_token(data: dict):
         SECRET_KEY,
         algorithm=ALGORITHM
     )
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(
+            token,
+            SECRET_KEY,
+            algorithms=[ALGORITHM]
+        )
+
+        return payload
+
+    except JWTError:
+      
+        return None
