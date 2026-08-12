@@ -6,6 +6,8 @@ from app.database import engine, Base
 
 from app.routes.auth import router
 
+from app.models.dataset import Dataset
+
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
