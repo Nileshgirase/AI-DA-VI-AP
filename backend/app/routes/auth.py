@@ -81,7 +81,10 @@ def login_user(
         )
     
     token = create_access_token(
-        {"sub":db_user.email}
+        {
+            "sub":db_user.email,
+            "user_id":db_user.id
+        }
     )
 
     return{
@@ -94,5 +97,4 @@ def get_me(
     current_user: User = Depends(get_current_user)):
     return {
         "email": current_user["sub"],
-        "username": current_user["username"]
     }
