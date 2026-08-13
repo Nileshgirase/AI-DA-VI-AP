@@ -4,16 +4,23 @@ from fastapi.middleware.cors import CORSMiddleware # type: ignore[import]
 
 from app.routes.upload import router as dataset_router # type: ignore[import]
 
+from app.models.user import User
+
+from app.models.dataset import Dataset
+
 from app.database import engine, Base
 
 from app.routes.auth import router
 
-from app.models.dataset import Dataset
+from app.routes.auth import router as auth_router
 
-app = FastAPI()
+from app.routes.upload import router as dataset_router
 
 Base.metadata.create_all(bind=engine)
 
+app = FastAPI()
+
+app.include_router(auth_router)
 app.include_router(dataset_router)
 
 app.add_middleware(
