@@ -6,6 +6,8 @@ import uuid
 
 import pandas as pd
 
+from io import BytesIO
+
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException #type: ignore[reportMissingImports]
 
 from sqlalchemy.orm import Session #type: ignore[reportMissingImports]
@@ -79,9 +81,13 @@ async def upload_dataset(
 
     try: 
         if extension ==".csv":
-            df = pd.read_csv(file_path)
+            df = pd.read_csv(
+                    BytesIO(contents)
+            )
         else:
-            df = pd.read_excel(file_path)
+            df = pd.read_excel(
+                    BytesIO(contents)
+                )
 
     except Exception:
         os.remove(file_path)
@@ -91,6 +97,16 @@ async def upload_dataset(
             status_code=400,
             details = " Invalid dataset file"
         )
+        # Replace NaN values with None
+    df = df.where(
+        pd.notnull(df),
+        None
+    )
+
+    # Convert DataFrame into list of dictionaries
+    data = df.to_dict(
+        orient="records"
+    )
 
     dataset =Dataset(
         filename=file.filename,#gets and save original name of uploaded file
@@ -109,4 +125,52 @@ async def upload_dataset(
         "filename":dataset.filename,
         "file_type":dataset.file_type,
         "columns": list(df.columns)
+    }
+
+
+@router.get("/{dataset_id}/preview")
+def preview_dataset(
+    dataset_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+    # it allows you to  communicate with database
+):
+    dataset = db.query(Dataset).filter(
+        #Go to dataset table with two condition
+        Dataset.id == dataset_id,
+        Dataset.user_id == current_user["user_id"]
+    ).first()#give first matching record
+
+    if not dataset:
+        raise HTTPException(
+            status_code=401,
+            detail="Dataset not found"
+        )
+
+    #check thefiletype
+    if dataset.file_type == "csv":
+
+        #read and convert csv file into pandas Dataframe 
+        df = pd.read_csv(
+            dataset.file_path 
+        )
+
+    else:
+        #read and convert csv file into pandas Dataframe 
+        df = pd.read_excel(
+            dataset.file_path
+        )
+
+    preview = df.head(10)
+    #head() returns firsst rows of dataframe
+
+    return {
+        "column": list(df.columns),#list() is used to convert index object into python list
+        
+        #Preview.to.dict() converts dataframe into a dictionary
+        "rows": preview.to_dict(
+
+            #orient="records" tells Pandas how to convert a DataFrame into a dictionary.
+            orient="records"
+        )
     }
