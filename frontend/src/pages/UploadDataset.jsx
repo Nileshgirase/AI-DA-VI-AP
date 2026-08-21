@@ -16,6 +16,7 @@ function UploadDataset() {
                 `/datasets/${datasetId}/preview`
             );
 
+            //console.log("Preview Response:",response.data);
             setPreview(response.data);
 
         } catch (error) {
@@ -55,14 +56,14 @@ function UploadDataset() {
             ); 
         }
     };
-
+    console.log("Preview state:", preview);
     return (
         <div>
             <h1>Upload Dataset</h1>
 
             <input
                 type="file"
-                accept="'csv,.xlsx"
+                accept=".csv,.xlsx"
                 onChange={handleFileChange}
             />
             <br/><br/>
@@ -101,12 +102,15 @@ function UploadDataset() {
             )}
             {preview && (
                 <div>
+                    <pre>
+                        {JSON.stringify(preview, null, 2)}
+                    </pre>
                     <h2>Dataset Preview</h2>
 
                     <table border="1">
                         <thead>
                             <tr>
-                                {preview.columns  && preview.columns.map((column) => (
+                                {preview.column.map((column) => (
                                     <th key={column}>
                                         {column}
                                     </th>
@@ -114,9 +118,9 @@ function UploadDataset() {
                             </tr>
                         </thead>
                         <tbody>
-                            {preview.data && preview.data.map((row,index) => (
+                            {preview.rows.map((row,index) => (
                                 <tr key={index}>
-                                    {preview.columns.map((column) => (
+                                    {preview.column.map((column) => (
                                         <td key={column}>
                                             {row[column]}
                                         </td>
@@ -125,7 +129,7 @@ function UploadDataset() {
                             ))}
                         </tbody>
                     </table>
-                </div>
+                </div>   
             )}
         </div>
     );
