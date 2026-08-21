@@ -40,15 +40,19 @@ function Dashboard() {
         <div>
             <h1>Dashboard</h1>
             
+            <p>Welcome to AI Data Visualization App</p>
             {user && (
             <>
                 <p>Email: {user.sub}</p>
                 <p>Expiry: {user.exp}</p>
             </>
-         )}
+             )}
             
-            <p>Protected Page</p>
-
+            <button
+              onClick={() => navigate("/upload")}>
+                Upload Dataset
+              </button>
+            <br/><br/>
             <button onClick={logout}>Logout</button>
         </div>
     );

@@ -11,6 +11,8 @@ import ForgotPassword from "./pages/ForgotPassword";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
+import UploadDataset from "./pages/UploadDataset";
+
 function App() {
   return (
 
@@ -31,7 +33,17 @@ function App() {
             }/>
 
         <Route path="/forgotpassword" element={<ForgotPassword/>}/>
+
+        <Route
+          path="/upload"
+          element={
+            <ProtectedRoute>
+              <UploadDataset />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
+
 
     </BrowserRouter>
   );

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 
 function ProtectedRoute({ children }) {
 
@@ -10,7 +10,7 @@ function ProtectedRoute({ children }) {
 
    useEffect(() => {
 
-      const checkuser = async () => {
+      const checkUser = async () => {
          const token = localStorage.getItem("token");
 
          if (!token) {
