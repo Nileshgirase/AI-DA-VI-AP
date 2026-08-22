@@ -18,6 +18,10 @@ from app.models.dataset import Dataset
 
 from app.dependencies.auth import get_current_user
 
+from app.services.dataset_analyzer import(
+    analyze_dataset
+)
+
 router = APIRouter(
     #'/datasets' add at the beginning of every endpoint in this router
     prefix="/datasets",
@@ -174,3 +178,40 @@ def preview_dataset(
             orient="records"
         )
     }
+
+@router.get("/dataset_id/analysis")
+def get_dataset_analysis(
+    dataset_id: int,
+    current_user=Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    dataset = (
+        db.query(Dataset).filter(
+            Dataset.id == dataset_id,
+            Dataset.user_id ==
+            current_user["user_id"]
+        ).first()
+    )
+
+    if not dataset:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Dataset not found"
+        )
+
+    if dataset.file_type == "csv":
+
+        df = pd.read_csv(
+            dataset.file_path
+        )
+
+    else:
+
+        df = pd.read_excel(
+            dataset.file_path
+        )
+
+    analysis = analyze_dataset(df)
+
+    return analysis
