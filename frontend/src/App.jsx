@@ -13,6 +13,8 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 
 import UploadDataset from "./pages/UploadDataset";
 
+import DatasetAnalysis from "./pages/DatasetAnalysis";
+
 function App() {
   return (
 
@@ -42,6 +44,11 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/datasets/:datasetId/analysis"
+          element={<DatasetAnalysis/>}>
+        </Route>
+
       </Routes>
 
 
