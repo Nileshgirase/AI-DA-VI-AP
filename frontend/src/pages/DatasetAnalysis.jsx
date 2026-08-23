@@ -24,14 +24,14 @@ function DatasetAnalysis(){
             );
 
             setAnalysis(response.data);
-            
+
         } catch (error) {
 
-            console.error("STATUS:",error.response?.status);
+            //console.error("STATUS:",error.response?.status);
 
-            console.log("Backend Response:",error.response?.data);
+            //console.log("Backend Response:",error.response?.data);
 
-            console.log("Request URL:",error.config?.url);
+            //console.log("Request URL:",error.config?.url);
 
             setError(
                 error.response?.data?.detail || 
