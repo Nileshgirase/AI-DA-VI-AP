@@ -1,11 +1,13 @@
 import { useState } from "react";
 import api from "../services/api";
+import { useNavigate } from "react-router-dom";
 
 function UploadDataset() {
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState("");
     const [dataset, setDataset] = useState(null);
     const [preview, setPreview] = useState(null);
+    const navigate = useNavigate();
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
     };
@@ -100,7 +102,7 @@ function UploadDataset() {
                     </ul>
                 </div>
             )}
-            {preview && (
+            {/*{preview && (
                 <div>
                     <pre>
                         {JSON.stringify(preview, null, 2)}
@@ -130,6 +132,16 @@ function UploadDataset() {
                         </tbody>
                     </table>
                 </div>   
+            )}
+            */}
+            {dataset && (
+
+                <button onClick={() => 
+                    navigate(`/datasets/${dataset.dataset_id}/analysis`)
+                }
+                >
+                    Analyze Dataset
+                </button>
             )}
         </div>
     );
