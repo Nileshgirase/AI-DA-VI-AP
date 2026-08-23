@@ -20,13 +20,18 @@ function DatasetAnalysis(){
 
         try{
             const response = await api.get(
-                `/datasets/${datasetId}/analysis`
+                `/datasets/datasets/${datasetId}/analysis`
             );
 
             setAnalysis(response.data);
+            
         } catch (error) {
 
-            console.error(error);
+            console.error("STATUS:",error.response?.status);
+
+            console.log("Backend Response:",error.response?.data);
+
+            console.log("Request URL:",error.config?.url);
 
             setError(
                 error.response?.data?.detail || 
@@ -94,8 +99,8 @@ function DatasetAnalysis(){
                     <tbody>
 
                         {Object.entries(
-                            analysis.column_categories
-                        ).map(([column,]) => (
+                            analysis?.column_categories || {}
+                        ).map(([column,category]) => (
                             <tr key={column}>
 
                                 <td>
@@ -128,7 +133,7 @@ function DatasetAnalysis(){
                     </thead>
                     <tbody>
                         {Object.entries(
-                            analysis.missing_values
+                            analysis?.missing_values || {}
                         ).map(([column, count]) => (
 
                             <tr key={column}>
@@ -149,31 +154,36 @@ function DatasetAnalysis(){
                 <h2>
                     Numeric Statistics
                 </h2>
-                {Object.entries(
-                    analysis.numeric_statistics 
-                ).map(([column, stats]) => (
-                    <div key={column}>
-                        
-                        <h3>{column}</h3>
-
-                            <p>
-                                Mean: {stats.mean}
-                            </p>
-
-                            <p>
-                                Median:{stats.median}
-                            </p>
-
-                            <p>
-                                Minimum:{stats.min}
-                            </p>
-
-                            <p>
-                                Maximum:{stats.max}
-                            </p>
-                        
-                    </div>
-                ))}
+                <table border="1">
+                    <thead>
+                        <tr>
+                            <th>Column</th>
+                            <th>Mean</th>
+                            <th>Median</th>
+                            <th>Maximum</th>
+                            <th>Minimum</th>
+                            <th>Standard Deviation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {Object.entries( 
+                        analysis?.numeric_statistics || {}
+                    ).map(([column, stats]) => {
+                            console.log("column:",column);
+                            console.log("Stats:",stats);
+                            return (
+                                <tr key={column}>
+                                    <td>{column}</td>
+                                    <td>{stats.mean}</td>
+                                    <td>{stats.median}</td>
+                                    <td>{stats.min}</td>
+                                    <td>{stats.max}</td>
+                                    <td>{stats.std}</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
