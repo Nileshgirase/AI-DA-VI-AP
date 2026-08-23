@@ -179,7 +179,7 @@ def preview_dataset(
         )
     }
 
-@router.get("/dataset_id/analysis")
+@router.get("/datasets/{dataset_id}/analysis")
 def get_dataset_analysis(
     dataset_id: int,
     current_user=Depends(get_current_user),
