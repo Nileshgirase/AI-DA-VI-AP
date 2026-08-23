@@ -54,9 +54,19 @@ def analyze_dataset(df: pd.DataFrame):
 
     numeric_statistics = {}
 
-    numeric_columns = df.select_dtypes(
-        include=["number"]
-    ).columns
+    numeric_columns = []
+
+    for column in df.select_dtypes(include="number").columns:
+
+        column_name=column.lower()
+
+        if(
+            column_name == "id"
+            or column_name.endswith("_id")
+            or column_name.endswith("id")
+        ):
+            continue
+        numeric_columns.append(column)
 
     for column in numeric_columns:
 
@@ -64,7 +74,8 @@ def analyze_dataset(df: pd.DataFrame):
             "mean":float(df[column].mean()),
             "median": float(df[column].median()),
             "min": float(df[column].min()),
-            "max": float(df[column].max())
+            "max": float(df[column].max()),
+            "std": float(df[column].max())
         }
     analysis ={
         "total_rows":len(df),
@@ -73,7 +84,8 @@ def analyze_dataset(df: pd.DataFrame):
         "missing_values": missing_values,
         "duplicate_rows": duplicate_rows,
         "column_types": column_types,
-        "column_categories": column_categories
+        "column_categories": column_categories,
+        "numeric_statistics": numeric_statistics
     }
 
     return analysis
